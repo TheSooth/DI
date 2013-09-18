@@ -12,4 +12,6 @@
 
 - (void)injectTo:(id <NSObject>)aInstance;
 
+- (BOOL)shouldIgnoreInjectionForClass:(Class)aClass;
+
 @end

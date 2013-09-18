@@ -15,7 +15,7 @@
 #import "CRDIContainer.h"
 #import "CRDIInjector.h"
 
-SPEC_BEGIN(CRDIAutoInjectorSpecSpec)
+SPEC_BEGIN(CRDIAutoInjectorSpec)
 
 describe(@"Attach to class", ^{
     __block CRDIAutoInjector *_autoInjector;
@@ -67,7 +67,7 @@ describe(@"Attach to class", ^{
     });
     
     it(@"Should attach and auto inject dependencies into child classes", ^{
-        [_autoInjector attachToClass:[CRDIInjectedClass class]];
+        [_autoInjector attachToClass:[NSObject class]];
         
         CRDIInjectedClassChild *objc = [[CRDIInjectedClassChild alloc] init];
         
@@ -84,11 +84,6 @@ describe(@"Attach to class", ^{
         
     });
     
-    it(@"should not allow to attach to NSObject", ^{
-        [[theBlock(^{
-            [_autoInjector attachToClass:[NSObject class]];
-        }) should] raise];
-    });
 });
 
 SPEC_END

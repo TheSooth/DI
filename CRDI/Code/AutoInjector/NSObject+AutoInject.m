@@ -20,14 +20,19 @@ static const char *kAutoInjectSwizzleFlagKey = "kAutoInjectSwizzleFlagKey";
 {
     id obj = [self initWithInject];
     
-    [[[self class] injector] injectTo:obj];
+    Class selfClass = [self class];
+    
+    BOOL shouldIgnoreInjection = [[selfClass injector] shouldIgnoreInjectionForClass:selfClass];
+    
+    if (!shouldIgnoreInjection) {
+        [[selfClass injector] injectTo:obj];
+    }
     
     return obj;
 }
 
 + (void)setInjector:(id <CRDIInstanceInjector>)injector
 {
-    
     if (![self isInitMethodSwizzled]) {
         ISSwizzleInstanceMethod(self, @selector(init), @selector(initWithInject));
         

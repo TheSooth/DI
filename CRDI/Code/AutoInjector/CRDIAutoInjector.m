@@ -29,7 +29,6 @@
 
 - (void)attachToClass:(Class)classToAttach
 {
-    NSParameterAssert(classToAttach != [NSObject class]);
     [classToAttach setInjector:self.injector];
 }
 

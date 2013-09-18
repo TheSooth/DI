@@ -377,11 +377,11 @@
 				EA5B9E5C17E73C94002A0D81 /* CRDIBuilderSpec.m */,
 				EA58218F17E865A10043406A /* CRDIConfigurationSpec.m */,
 				EA435CBC17E9B37C007F3878 /* CRDIInjectorSpec.m */,
-				EA5B9E5017E739AA002A0D81 /* CRDITestObjects */,
-				EA5B9E4117E735C1002A0D81 /* Supporting Files */,
 				AD7A72D817E9C2D100602401 /* CRDIClassInspectorSpec.m */,
 				AD1857C117E9C8D700B0A886 /* CRDIPropertyNameMatcherSpec.m */,
 				AD24C80E17E9D91500E0ED9E /* CRDIAutoInjectorSpec.m */,
+				EA5B9E5017E739AA002A0D81 /* CRDITestObjects */,
+				EA5B9E4117E735C1002A0D81 /* Supporting Files */,
 			);
 			path = "CRDI Tests";
 			sourceTree = "<group>";

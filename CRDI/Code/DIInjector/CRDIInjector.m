@@ -9,6 +9,7 @@
 #import "CRDIInjector.h"
 #import "DIClassTemplate.h"
 #import "CRDIClassInspector.h"
+#import "DIClassTemplate.h"
 
 static CRDIInjector *sDefaultInjector = nil;
 
@@ -17,6 +18,7 @@ static CRDIInjector *sDefaultInjector = nil;
 @property (nonatomic, weak) CRDIContainer *container;
 @property (nonatomic, strong) NSMutableDictionary *classesCache;
 @property (nonatomic, strong) CRDIClassInspector *classInspector;
+@property (nonatomic, strong) NSMutableDictionary *ignoringClasses;
 
 @end
 
@@ -47,9 +49,17 @@ static CRDIInjector *sDefaultInjector = nil;
         self.container = aContainer;
         self.classInspector = [CRDIClassInspector new];
         self.classesCache = [NSMutableDictionary new];
+        self.ignoringClasses = [NSMutableDictionary new];
+        
+        [self setupDefaultIgnoredClass];
     }
     
     return self;
+}
+
+- (void)setupDefaultIgnoredClass
+{
+    [self disableInjectionForClass:[DIClassTemplate class]];
 }
 
 - (void)injectTo:(id)aInstance
@@ -57,9 +67,9 @@ static CRDIInjector *sDefaultInjector = nil;
     NSParameterAssert(aInstance);
     NSParameterAssert(self.classesCache);
     
-    DIClassTemplate *cachedClassTeamplate = [self classTemplateForInstance:aInstance];
+    DIClassTemplate *cachedClassTemplate = [self classTemplateForClass:[aInstance class]];
     
-    for (DIPropertyModel *propertyModel in cachedClassTeamplate.properties) {
+    for (DIPropertyModel *propertyModel in cachedClassTemplate.properties) {
         id <CRDIDependencyBuilder> builder = [self.container builderForProtocol:propertyModel.protocol];
         
         id buildedObject = [builder build];
@@ -68,17 +78,31 @@ static CRDIInjector *sDefaultInjector = nil;
     }
 }
 
-- (DIClassTemplate *)classTemplateForInstance:(id)aInstance
+- (DIClassTemplate *)classTemplateForClass:(Class)aClass
 {
-    NSString *className = NSStringFromClass([aInstance class]);
+    NSString *className = NSStringFromClass(aClass);
     
     DIClassTemplate *cachedClassTeamplate = self.classesCache[className];
     
-    if (cachedClassTeamplate == nil) {
-        cachedClassTeamplate = [self.classInspector inspect:[aInstance class]];
-        self.classesCache[className] = cachedClassTeamplate;
+    if (!cachedClassTeamplate) {
+        cachedClassTeamplate = [self.classInspector inspect:aClass];
+        if (cachedClassTeamplate) {
+            self.classesCache[className] = cachedClassTeamplate;
+        }
     }
     return cachedClassTeamplate;
+}
+
+- (void)disableInjectionForClass:(Class)aClass
+{
+    [self.ignoringClasses setValue:@(YES) forKey:NSStringFromClass(aClass)];
+}
+
+- (BOOL)shouldIgnoreInjectionForClass:(Class)aClass
+{
+    NSString *classKey = NSStringFromClass(aClass);
+    
+    return [self.ignoringClasses[classKey] boolValue];
 }
 
 @end

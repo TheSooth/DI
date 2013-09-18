@@ -20,6 +20,7 @@ describe(@"CRDIInjector Specs", ^{
     __block CRDISampleClass *_sampleObject;
     __block id _builderMock;
     __block id _containerMock;
+    __block CRDIInjector *_injector;
     
     beforeEach(^{
         _sampleObject = [CRDISampleClass new];
@@ -29,22 +30,20 @@ describe(@"CRDIInjector Specs", ^{
         
         _containerMock =[KWMock mockForClass:[CRDIContainer class]];
         [_containerMock stub:@selector(builderForProtocol:) andReturn:_builderMock];
+        
+        _injector = [[CRDIInjector alloc] initWithContainer:_containerMock];
     });
     
     it(@"Should return this same object for default injector", ^{
-        CRDIInjector *injector = [[CRDIInjector alloc] initWithContainer:_containerMock];
+        [CRDIInjector setDefaultInjector:_injector];
         
-        [CRDIInjector setDefaultInjector:injector];
-        
-        [[injector should] equal:[CRDIInjector defaultInjector]];
+        [[_injector should] equal:[CRDIInjector defaultInjector]];
     });
     
     it(@"Should return object with injected property", ^{
-        CRDIInjector *injector = [[CRDIInjector alloc] initWithContainer:_containerMock];
-        
         CRDIInjectedClass *classWhichMustBeInjected = [CRDIInjectedClass new];
         
-        [injector injectTo:classWhichMustBeInjected];
+        [_injector injectTo:classWhichMustBeInjected];
         
         [[classWhichMustBeInjected.ioc_injected shouldNot] beNil];
         
@@ -54,10 +53,8 @@ describe(@"CRDIInjector Specs", ^{
     });
     
     it(@"should throw an exception if nil instance for inject is received", ^{
-        CRDIInjector *injector = [[CRDIInjector alloc] initWithContainer:_containerMock];
-        
         [[theBlock(^{
-            [injector injectTo:nil];
+            [_injector injectTo:nil];
         }) should] raise];
         
     });

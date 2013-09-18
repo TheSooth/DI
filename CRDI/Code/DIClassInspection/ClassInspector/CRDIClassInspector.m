@@ -36,11 +36,15 @@
 
 - (DIClassTemplate*)inspect:(Class)instanceClass
 {
-    DIClassTemplate *template = [DIClassTemplate new];
+    NSArray *properties = [self parsePropertiesFromClass:instanceClass];
+    DIClassTemplate *template = nil;
     
-    template.templateClass = instanceClass;
-    
-    template.properties = [self parsePropertiesFromClass:instanceClass];
+    if (properties.count > 0) {
+        template = [DIClassTemplate new];
+        template.templateClass = instanceClass;
+        
+        template.properties = properties;
+    }
     
     return template;
 }

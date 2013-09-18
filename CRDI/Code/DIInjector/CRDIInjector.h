@@ -19,4 +19,6 @@
 
 - (id)initWithContainer:(CRDIContainer *)aContainer;
 
+- (BOOL)shouldIgnoreInjectionForClass:(Class)aClass;
+
 @end
