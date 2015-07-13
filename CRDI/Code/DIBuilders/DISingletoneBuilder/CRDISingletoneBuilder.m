@@ -13,7 +13,7 @@
 
 @property (nonatomic, strong) id sharedInstance;
 
-@property (nonatomic, weak) id <CRDIDependencyBuilder> instanceBuilder;
+@property (nonatomic, strong) id <CRDIDependencyBuilder> instanceBuilder;
 
 @property (nonatomic, strong) dispatch_queue_t queue;
 
